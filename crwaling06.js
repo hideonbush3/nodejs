@@ -14,18 +14,22 @@ async function main() {
   const URL = "https://movie.daum.net/main";
 
   // 크롬 자동화 브라우저 객체 생성
+  // Builder 클래스는 WebDriver 객체를 만들기 위한 구성옵션을 제공
+  // 구성옵션으로는 브라우저 종류, 브라우저 옵션, 디버깅 정보 등이 있음
   const chrome = await new Builder()
-    .forBrowser(Browser.CHROME)
-    .setChromeOptions()
-    .build();
+    .forBrowser(Browser.CHROME) // 구성옵션으로서 크롬을 사용
+    .setChromeOptions() //   Chrome 브라우저의 옵션 설정
+    .build(); // 구성옵션으로 설정한 WebDriver 객체 생성
 
   try {
     // 지정한 url로 접속
     await chrome.get(URL);
 
-    // 특정 요소가 화면에 위치할때까지 최대 5초간 기다려 줌
+    // 특정 요소가 화면에 로드될 때까지 최대 5초간 기다려 줌
     await chrome.wait(
-      until.elementLocated(
+      until.elementLocated( // 특정 요소가 로드될때까지
+          // By.css는 셀레니움 WebDriver의 메서드이다
+          // 특정 CSS 셀렉터가 적용된 HTML요소를 찾는데 사용함
         By.css(".feature_home div:nth-child(3).slide_ranking .tit_item")
       ),
       5000
