@@ -16,7 +16,7 @@ async function main() {
     servicekey:
       "B3vwYzTiX5fhDvELyU0et7PBBK38hsVRfmdjyLb8AiqTnlWKhqCGGgEiAFu7Gh1ulUPTOs/KHe6qsnzbv/CJow==",
     numOfRows: 1000,
-    apiType: "xml", // xml 또는 JSON, json은 안됨
+    apiType: "xml", // xml 또는 JSON, json 이라고 소문자는 안됨
     std_day: "2023-02-12",
   };
   const headers = {
@@ -34,18 +34,18 @@ async function main() {
   // console.log(xml);
   // console.log(xml.data);
 
-  // XML 을 JSON 으로 변환
+  // XML 을 JSON 객체로 변환
   const parser = new XMLParser();
   let json = parser.parse(xml.data);
 
   // console.log(json)
   // JSON으로 불러오기
-  let items = json["response"]["body"]["items"]; // response내의 body내의 items
+  let items = json.response.body.items; // response내의 body내의 items
   // console.log(items['item']);
   //
   // 미세먼지 정보 출력
   // pm25Value는 출력안됨! -> 파라미터에 버전 1.3으로 설정하니 됨
-  for (let item of items["item"]) {
+  for (let item of items.item) {
     console.log(
       `시도: ${item.gubun}, 누적확진자: ${item.defCnt}, 일자: ${item.stdDay}`
     );
