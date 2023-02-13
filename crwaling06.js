@@ -1,15 +1,11 @@
-// 미세먼지 공공테이터를 이용해서 특정 지역의 미세먼지 정보 출력
-// https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty
-// https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=B3vwYzTiX5fhDvELyU0et7PBBK38hsVRfmdjyLb8AiqTnlWKhqCGGgEiAFu7Gh1ulUPTOs%2FKHe6qsnzbv%2FCJow%3D%3D&returnType=json&numOfRows=100&pageNo=1&sidoName=%EC%A0%84%EA%B5%AD&ver=1.0
-// 사용할 패키지 가져오기 : require('패키지명')
+// 다음 영화에서 영화정보 크롤링
 const cheerio = require("cheerio"); // DOM 라이브러리
 // 셀레니움 사용법
 // https://www.selenium.dev/documentation/webdriver/getting_started/first_script/
 const { Builder, Browser, By, Key, until } = require("selenium-webdriver");
 
+// 비동기 I/O 지원 함수 정의
 async function main() {
-  // 비동기 I/O 지원 함수 정의
-
   // 접속할 url 지정
   const URL = "https://movie.daum.net/main";
 
@@ -27,56 +23,60 @@ async function main() {
 
     // 특정 요소가 화면에 로드될 때까지 최대 5초간 기다려 줌
     await chrome.wait(
-      until.elementLocated( // 특정 요소가 로드될때까지
-          // By.css는 셀레니움 WebDriver의 메서드이다
-          // 특정 CSS 셀렉터가 적용된 HTML요소를 찾는데 사용함
-        By.css(".feature_home div:nth-child(3).slide_ranking .tit_item")
+      until.elementLocated(
+        // 특정 요소가 로드될때까지
+        // By.css는 셀레니움 WebDriver의 메서드이다
+        // 특정 CSS 셀렉터가 적용된 HTML요소를 찾는데 사용함
+        By.css(".feature_home .slide_ranking .tit_item")
       ),
       5000
     );
+
     await chrome.wait(
       until.elementLocated(
         By.css(
-          ".feature_home div:nth-child(3).slide_ranking .txt_num:first-child"
-        )
-      ),
-      5000
-    );
-    await chrome.wait(
-      until.elementLocated(
-        By.css(
-          ".feature_home div:nth-child(3).slide_ranking .txt_num:last-child"
+          ".feature_home .slide_ranking .txt_num:first-child" // 평점
         )
       ),
       5000
     );
 
-    //접속한 사이트의 html 소스를 가져옴
+    await chrome.wait(
+      until.elementLocated(
+        By.css(
+          ".feature_home .slide_ranking .txt_num:last-child" // 예매율
+        )
+      ),
+      5000
+    );
+
+    // 접속한 사이트의 html 코드를 가져옴
     const html = await chrome.getPageSource();
     // console.log(html);
 
-    // 페이지소스를 dom 객체로 변환
+    // html 코드를 문서객체모델(DOM) 으로 변환
     const dom = cheerio.load(html);
+    // console.log(dom);
 
     // 영화제목들 추출
-    let movies = dom(".feature_home div:nth-child(3).slide_ranking .tit_item");
-    let rates = dom(
-      ".feature_home div:nth-child(3).slide_ranking .txt_num:first-child"
-    );
-    let reserves = dom(
-      ".feature_home div:nth-child(3).slide_ranking .txt_num:last-child"
-    );
+    // dom(매개변수)로 새로운 cheerio 객체를 생성해서 movies에 할당
+    // dom 메서드는 cheerio 객체에서만 사용 가능
+    let movies = dom(".feature_home .slide_ranking .tit_item");
+    // console.log(movies);
+    let rates = dom(".feature_home .slide_ranking .txt_num:first-child");
+    let reserves = dom(".feature_home .slide_ranking .txt_num:last-child");
 
     // 추출한 결과를 저장하기 위한 배열 선언
+    // text 메서드는 cheerio 객체에서만 사용가능
     let moviess = [],
       ratess = [],
       rsrvss = [];
     // 추출한 영화제목 출력
+    // each는 cheerio 객체에서만 사용 가능
     movies.each((idx, movie) => {
       let title = dom(movie).text().trim();
       moviess.push(title);
     });
-
     // 평점
     rates.each((idx, rate) => {
       let point = dom(rate).text().trim();

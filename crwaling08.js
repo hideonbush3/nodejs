@@ -52,6 +52,11 @@ async function main() {
     let apt = "아이파크삼성동";
 
     // 검색년도 값 설정
+    // select변수에 할당된 HTML 요소(select태그)를 가져와서
+    // Select 객체를 생성하고 selectByVisibleText 메서드를
+    // 사용하여 선택자의 표시되는 텍스트와 일치하는 옵션을 선택
+    // 즉 selectByVisibleText 메서드를 사용하기 위해
+    // select 태그를 가져와 Select 객체를 생성한 것
     let select = await chrome.findElement(By.name("searchYYYY"));
     await new Select(select).selectByVisibleText(syear);
     await sleep(300);
@@ -76,7 +81,7 @@ async function main() {
     await new Select(select).selectByVisibleText(dong);
     await sleep(300);
 
-    // 검색결과 출력 - 아파르명, 주소
+    // 검색결과 출력 - 아파트명, 주소
     let apts = await chrome.findElements(By.css('.aptS_rLName'));
     for (let apt of apts){
       console.log(await apt.getAttribute("textContent"));
@@ -93,6 +98,8 @@ async function main() {
     await chrome.quit();
   }
 }
+
+
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 main();

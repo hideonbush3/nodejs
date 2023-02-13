@@ -6,13 +6,13 @@
 const axios = require("axios"); // Ajax 라이브러리
 const { XMLParser } = require("fast-xml-parser"); // xml 처리기 라이브러리
 
+// 비동기 지원 함수 정의
 async function main() {
-  // 비동기 지원 함수 정의
+
   // 접속할 url 지정, 쿼리스트링, user-agent 헤더 지정
   // https://www.data.go.kr/iim/api/selectAPIAcountView.do에서
   // 미리보기 눌렀을때 질의문자열('?'로 시작) 앞까지의 url 복사해서 URL에 할당
   // https 아니고 http로 써야함
-
   // 인증 vs 인가
   const URL =
     "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty";
@@ -47,14 +47,13 @@ async function main() {
   const parser = new XMLParser();
   let json = parser.parse(xml.data);
   // console.log(json);
-  // console.log(xml.data);
-  // console.log(xml);
 
+  // let items = json.response.body.items;  // 이렇게도 됨
   let items = json["response"]["body"]["items"]; // response내의 body내의 items
   // console.log(items);  // 출력해보면 items 객체 개부의 item이라는 배열 내부에 데이터들이 객체형태로 담겨있다
   // 미세먼지 정보 출력
   // pm25Value는 출력안됨! -> 파라미터에 버전 1.3으로 설정하니 됨
-  for (let item of items["item"]) {
+  for (let item of items["item"]) { // items.item 이라고 써도 됨
     console.log(
       item.sidoName,
       item.stationName,

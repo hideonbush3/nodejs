@@ -1,16 +1,9 @@
-// 미세먼지 공공테이터를 이용해서 특정 지역의 미세먼지 정보 출력
-// https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty
-// https://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty?serviceKey=B3vwYzTiX5fhDvELyU0et7PBBK38hsVRfmdjyLb8AiqTnlWKhqCGGgEiAFu7Gh1ulUPTOs%2FKHe6qsnzbv%2FCJow%3D%3D&returnType=json&numOfRows=100&pageNo=1&sidoName=%EC%A0%84%EA%B5%AD&ver=1.0
-// 사용할 패키지 가져오기 : require('패키지명')
-const cheerio = require("cheerio"); // DOM 라이브러리
 // 셀레니움 사용법
 // https://www.selenium.dev/documentation/webdriver/getting_started/first_script/
 const { Builder, Browser, By, Key, until } = require("selenium-webdriver");
 
+// 비동기 I/O 지원 함수 정의
 async function main() {
-  // 비동기 I/O 지원 함수 정의
-
-  // 접속할 url 지정
   const URL = "https://movie.daum.net/main";
 
   // 크롬 자동화 브라우저 객체 생성
@@ -25,7 +18,6 @@ async function main() {
     // 지정한 url로 접속
     await chrome.get(URL);
 
-    // 특정 요소가 화면에 로드될 때까지 최대 5초간 기다려 줌
     await chrome.wait(
       // 특정 요소가 로드될때까지
       until.elementLocated(
@@ -55,6 +47,7 @@ async function main() {
     let movies = await chrome.findElements(
       By.css(".feature_home div:nth-child(3).slide_ranking .tit_item")
     );
+    // console.log(movies)
     let rates = await chrome.findElements(
       By.css(
         ".feature_home div:nth-child(3).slide_ranking .txt_num:first-child"
@@ -69,21 +62,22 @@ async function main() {
       ratess = [],
       rsrvss = [];
 
-    // 추출한 영화제목 출력
+    // 추출한 영화제목 배열에 저장
     for (let movie of movies) {
       // console.log(await movie.getText()); // 눈에 보이는 요소만 출력
       let title = (await movie.getAttribute("textContent")).trim();
       // console.log(title.trim());
       moviess.push(title);
     }
+    // console.log(moviess);
 
-    // 추출한 평점 출력
+    // 추출한 평점 배열에 저장
     for (let rate of rates) {
       let point = await rate.getAttribute("textContent");
       ratess.push(point);
     }
 
-    // 추출한 예매율 출력
+    // 추출한 예매율 배열에 저장
     for (let rsrv of reserves) {
       let rsrt = await rsrv.getAttribute("textContent");
       rsrvss.push(rsrt);
@@ -91,7 +85,7 @@ async function main() {
 
     // 한번에 모아서 출력
     for (let i = 0; i < moviess.length; ++i) {
-      console.log(`${moviess[i]}\n평점:${ratess[i]} 예매율:${rsrvss[i]}`);
+      console.log(`${moviess[i]} 평점:${ratess[i]} 예매율:${rsrvss[i]}`);
     }
   } catch (ex) {
     console.log(ex);
