@@ -57,22 +57,8 @@ async function main() {
 
 // 등급별 이모지
 let pmGrade = (val) => {
-  // if (density > 150) return "😱";
-  // else if (density > 80) return "😣";
-  // else if (density > 30) return "😐";
-  // else if (density == "-") return "-";
-  // else return "😄";
-  let emojis = ['😄','😐','😣','😱'];
-
+  let emojis = ["😄", "😐", "😣", "😱"];
   return emojis[parseInt(val) - 1];
 };
-
-// let pm25Grade = (density) => {
-//   if (density > 75) return "😱";
-//   else if (density > 35) return "😣";
-//   else if (density > 14) return "😐";
-//   else if (density == "-") return "-";
-//   else return "😄";
-// };
 
 main();
