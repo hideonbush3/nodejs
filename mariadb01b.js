@@ -5,8 +5,7 @@ async function main() {
   // const sql = "select distinct gugun from zipcode2013 where sido = ?";
   // const params = ['부산'];
 
-  const sql = "select distinct gugun from zipcode2013 " +
-      "where sido = :sido";
+  const sql = "select distinct gugun from zipcode2013 where sido = :sido";
   const params = { sido: "부산" };
   let conn = null;
 
@@ -16,6 +15,7 @@ async function main() {
     // let result = await conn.execute(sql, params);  // sql ? 형식
 
     let result = await conn.execute(
+      // sql :컬럼명 형식
       {
         namedPlaceholders: true,
         sql: sql,
