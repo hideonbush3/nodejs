@@ -1,6 +1,6 @@
 // 셀레니엄을 이용해서 k-apt.go.kr에서
 // 2023년 1월, 서울특별시, 강남구, 삼성동, 아이파크삼성 apt의
-// 지상/지하 주차장 수 추출
+// 지상/지하 주차장 대수 추출
 
 const {
   Builder,
@@ -10,7 +10,6 @@ const {
   until,
   Select,
 } = require("selenium-webdriver");
-const cheerio = require("cheerio");
 
 async function main() {
   const URL = "http://www.k-apt.go.kr/";
@@ -49,7 +48,7 @@ async function main() {
     let sido = "서울특별시";
     let gugun = "강남구";
     let dong = "삼성동";
-    let apt = "아이파크삼성동";
+    let apt = "삼성홍실";
 
     // 검색년도 값 설정
     // select변수에 할당된 HTML 요소(select태그)를 가져와서
@@ -61,7 +60,7 @@ async function main() {
     await new Select(select).selectByVisibleText(syear);
     await sleep(300);
 
-    // 검색월 값 설정
+    // 검색 월 값 설정
     select = await chrome.findElement(By.name("searchMM"));
     await new Select(select).selectByVisibleText(smonth);
     await sleep(300);
@@ -92,7 +91,7 @@ async function main() {
     }
     await chrome.sleep(1000);
 
-    // 아이파크 삼성동 항목(apt)을 찾아 인덱스 값 추출
+    // 삼성홍실 항목(apt)을 찾아 인덱스 값 추출
     let idx = 0;
     for (let val of apts) {
       console.log(`${idx++} ${await val.getAttribute("textContent")}`);
@@ -122,8 +121,6 @@ async function main() {
     let pcntu = await chrome.findElement(By.css("#kaptd_pcntu")).getText();
     let tpcnt = await chrome.findElement(By.css("#kaptd_total_pcnt")).getText();
     console.log(await pcnt, await pcntu, await tpcnt);
-
-
   } catch (ex) {
     console.log(ex);
   } finally {
