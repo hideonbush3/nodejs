@@ -82,14 +82,47 @@ async function main() {
     await sleep(300);
 
     // 검색결과 출력 - 아파트명, 주소
-    let apts = await chrome.findElements(By.css('.aptS_rLName'));
-    for (let apt of apts){
+    let apts = await chrome.findElements(By.css(".aptS_rLName"));
+    for (let apt of apts) {
       console.log(await apt.getAttribute("textContent"));
     }
-    let aptaddrs = await chrome.findElements(By.css('.aptS_rLAdd'));
-    for (let addr of aptaddrs){
+    let aptaddrs = await chrome.findElements(By.css(".aptS_rLAdd"));
+    for (let addr of aptaddrs) {
       console.log(await addr.getAttribute("textContent"));
     }
+    await chrome.sleep(1000);
+
+    // 아이파크 삼성동 항목(apt)을 찾아 인덱스 값 추출
+    let idx = 0;
+    for (let val of apts) {
+      console.log(`${idx++} ${await val.getAttribute("textContent")}`);
+      if ((await val.getAttribute("textContent")) == apt) break;
+    }
+
+    // 추출한 인덱스값을 이용해서 아파트 항목 직접 클릭
+    menu = await chrome.findElement(
+      By.css(`.mCSB_container ul li:nth-child(${idx}) a`)
+    );
+
+    await chrome.actions().move({ origin: menu }).click().perform();
+
+    // await chrome.executeScript(
+    //     'arguments[0].click();', apts[--idx]);
+    await chrome.sleep(1000);
+
+    // ----------------------------
+    // 관리시설 정보 클릭
+    let danzee = await chrome.findElement(
+      By.xpath('//*[@id="container"]/div[2]/div[1]/ul/li[3]/a')
+    );
+    await chrome.actions().move({ origin: danzee }).click().perform();
+    await chrome.sleep(1000);
+
+    let pcnt = await chrome.findElement(By.css("#kaptd_pcnt")).getText();
+    let pcntu = await chrome.findElement(By.css("#kaptd_pcntu")).getText();
+    let tpcnt = await chrome.findElement(By.css("#kaptd_total_pcnt")).getText();
+    console.log(await pcnt, await pcntu, await tpcnt);
+
 
   } catch (ex) {
     console.log(ex);
@@ -98,7 +131,6 @@ async function main() {
     await chrome.quit();
   }
 }
-
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
